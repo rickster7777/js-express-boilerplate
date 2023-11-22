@@ -1,24 +1,30 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
+const express = require('express');
+const axios = require('axios');
+const bodyParser = require('body-parser');
+const Rule = require('./database/user/rules.model')
+require('./db.js')
 
-import logger from '@tczdigital/node-utilities/logger';
-import app from './configs/express.config';
+const app = express();
 
-/* This is a catch-all for any uncaught exceptions. */
-process.on('uncaughtException', (err) => {
-    logger.error(`Uncaught Exception  💥  : ${err}`);
-    process.exit(1);
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+    res.send('rules API!!!!');
 });
 
-/* This is a catch-all for any unhandled rejections. */
-process.on('unhandledRejection', (reason, promise) => {
-    logger.error(`Unhandled rejection  💥  at ${promise}, reason: ${reason}`);
-    process.exit(1);
-});
 
-/* This is a callback function that is called when the server is started. */
-app.listen(process.env.PORT, () => {
-    logger.info(`Server Started on Port : ${process.env.PORT} 💚`);
-});
+app.post('/rules', (req, res) => {
+    const requestData = req.body; // Access the data sent in the POST request
 
-export default app;
+    console.log('Received data:', requestData);
+    let rules = new Rule(requestData);
+
+    rules.save().catch(error => console.log(error));
+
+    res.status(200).json({ message: 'Data received successfully' });
+  });
+
+app.listen(3000, () => {
+    console.log('App listening on port 3000!!');
+})
+
