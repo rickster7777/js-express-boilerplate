@@ -8,23 +8,16 @@
         "npm": ">=5.0.3"
     },
     "scripts": {
-        "dev": "env-cmd -f ./.env.development gulp serve",
-        "start:dev": "env-cmd -f ./.env.development node dist/src/app.js",
-        "start:stage": "env-cmd -f ./.env.stage node dist/src/app.js",
-        "start:prod": "env-cmd -f ./.env.producction node dist/src/app.js",
-        "build": "gulp",
-        "report-coverage": "coveralls < ./coverage/lcov.info",
-        "prepare": "husky install",
-        "lint": "eslint . --fix --max-warnings=0",
-        "format": "prettier . --write",
-        "scan": "node scanner.mjs",
-        "publish-patch": "npm version patch && npm run scan",
-        "publish-minor": "npm version patch && npm run scan",
-        "publish-major": "npm version patch && npm run scan"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node app.js",
+        "dev": "nodemon app.js "
     },
     "dependencies": {
         "@babel/runtime": "^7.21.0",
+        "@google-cloud/bigquery": "^7.3.0",
+        "@slack/bolt": "^3.14.0",
         "@tczdigital/node-utilities": "^0.0.14",
+        "axios": "^1.6.2",
         "compression": "^1.7.4",
         "cookie-parser": "^1.4.6",
         "cors": "^2.8.5",
@@ -41,6 +34,7 @@
         "jsonwebtoken": "^9.0.0",
         "mongoose": "^7.0.3",
         "morgan": "^1.10.0",
+        "node-cron": "^3.0.3",
         "passport": "^0.6.0",
         "passport-jwt": "^4.0.1",
         "sonarqube-scanner": "^3.0.1",
@@ -58,6 +52,7 @@
         "core-js": "^3.30.0",
         "coveralls": "^3.1.1",
         "del": "^6.1.1",
+        "dotenv": "^16.3.1",
         "eslint": "^8.37.0",
         "eslint-config-prettier": "^8.8.0",
         "ghooks": "^2.0.4",
@@ -70,6 +65,7 @@
         "gulp-uglify": "^3.0.2",
         "husky": "^8.0.3",
         "lint-staged": "^13.2.0",
+        "nodemon": "^3.0.1",
         "prettier": "^2.8.7"
     },
     "author": "TechChefz",
