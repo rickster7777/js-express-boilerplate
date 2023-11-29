@@ -31,12 +31,29 @@ app.message("hello", async ({ message, say }) => {
 });
 
 function sendMessage(channel, message) {
-	channel = "contact-channel"
+	//channel = "contact-channel"
 	app.client.chat.postMessage({
 		channel: channel,
 		text: message,
 	});
 }
+
+const createChannel = async (ruleName) => {
+	// const channelName = 'rule-name23';
+	const channelName = ruleName;
+	try {
+		const result = await app.client.conversations.create({
+			name: channelName,
+		});
+
+		console.log(`Channel created: ${result}`);
+		return result.channel.name;
+	} catch (error) {
+		console.log('Cron job execution!!!');
+	}
+};
+
+
 let documents
 
 (async () => {
@@ -45,16 +62,12 @@ let documents
 	console.log("⚡️ App is running!");
 	try {
 		// console.log('Fetched documents:', documents);
-	  } catch (err) {
+	} catch (err) {
 		console.error('Error fetching documents:', err);
-	  }
+	}
 })();
 
-const date = new Date();
-const yesterday = new Date(date.setDate(date.getDate() - 1));
-const sevenDaysAgo = new Date(date.setDate(date.getDate() - 7));
-const formattedDate = yesterday.toISOString().split("T")[0];
-const sevenDaysAgoFormattedDate = sevenDaysAgo.toISOString().split("T")[0];
+
 
 async function getDataNew(projectId, datasetId, tableId, startDate) {
 	const query = `
@@ -97,35 +110,72 @@ async function getDataKeywordReport(projectId, datasetId, tableId, startDate) {
 }
 
 
+const dateTransform = (timeRange) => {
+	const date = new Date();
+	// let dateTrans
+	if (timeRange === 'Yesterday') {
+		const yesterday = new Date(date.setDate(date.getDate() - 1));
+		const yesterdayDate = yesterday.toISOString().split("T")[0];
+		return yesterdayDate;
+	}
 
-const fetchDocs = async ()=> {
+	else if (timeRange === 'Last 2 days') {
+		const twoDaysAgo = new Date(date.setDate(date.getDate() - 2));
+		const twoDaysAgoDate = twoDaysAgo.toISOString().split("T")[0];
+		return twoDaysAgoDate
+	}
+
+	else if (timeRange === 'Last 3 days') {
+		const threeDaysAgo = new Date(date.setDate(date.getDate() - 3));
+		const threeDaysAgoDate = threeDaysAgo.toISOString().split("T")[0];
+		return threeDaysAgoDate
+	}
+	else if (timeRange === 'Last 7 days') {
+		const sevenDaysAgo = new Date(date.setDate(date.getDate() - 7));
+		const sevenDaysAgoDate = sevenDaysAgo.toISOString().split("T")[0];
+		return sevenDaysAgoDate
+	}
+	else if (timeRange === 'Last 14 days') {
+		const fourteenDaysAgo = new Date(date.setDate(date.getDate() - 14));
+		const fourteenDaysAgoDate = fourteenDaysAgo.toISOString().split("T")[0];
+		return fourteenDaysAgoDate
+	}
+	else if (timeRange === 'Last 30 days') {
+		const thirtyDaysAgo = new Date(date.setDate(date.getDate() - 30));
+		const thirtyDaysAgoDate = thirtyDaysAgo.toISOString().split("T")[0];
+		return thirtyDaysAgoDate
+	}
+}
+const fetchDocs = async () => {
 	documents = await fetchDocuments();
 	documents.forEach(async element => {
+		const timerange = dateTransform(element.timeRange);
+
 		if (element.applyRuleTo === 'Campaign') {
-			await sendCampaignInefficientNotification(element.conditions, formattedDate);
+			await sendCampaignInefficientNotification(element.ruleName, element.conditions, timerange);
 		}
 
 		else if (element.applyRuleTo === 'AdGroup') {
-			await sendHighCpcNotification(element.conditions, formattedDate);
+			await sendHighCpcNotification(element.ruleName, element.conditions, timerange);
 		}
 
 		else if (element.applyRuleTo === 'Targeting') {
-			await sendLowConversionRateNotification(element.conditions, sevenDaysAgoFormattedDate);
+			await sendLowConversionRateNotification(element.ruleName, element.conditions, timerange);
 		}
 
 		else if (element.applyRuleTo === 'SearchTerm') {
 			element.conditions.forEach(async metrics => {
-				if(metrics?.metric === 'ACOS'){
-					await sendLowAcosNotification(element.conditions, sevenDaysAgoFormattedDate);
+				if (metrics?.metric === 'ACOS') {
+					await sendLowAcosNotification(element.ruleName, element.conditions, timerange);
 				}
 				else if (metrics?.metric === 'CTR') {
-					await sendLowCtrNotification(element.conditions, formattedDate);
+					await sendLowCtrNotification(element.ruleName, element.conditions, timerange);
 				}
 			})
 		}
 	});
 }
-async function sendCampaignInefficientNotification(conditions, time_range) {
+async function sendCampaignInefficientNotification(ruleName, conditions, time_range) {
 	try {
 		const campaignData = await getDataNew(
 			"flipkart-390013",
@@ -134,54 +184,248 @@ async function sendCampaignInefficientNotification(conditions, time_range) {
 			time_range
 		);
 
+		//console.log('camp length', campaignData.length);
+
 		const inefficientCampaigns = [];
 		// console.log(campaignData);
 
-		for (data of campaignData) {
-			// const { ad_spend, direct_revenue, indirect_revenue } = data;
-			// const roas = (direct_revenue + indirect_revenue) / ad_spend;
-			let ad_spend = 0;
-			let ad_spend_condition = ''
-			let roas = 0;
-			let roas_condition = ''
+		function addToInefficientCampaigns(campaignId, campaignName) {
+			let isAlreadyPresent = false;
 
-			conditions.forEach(metrics => {
-				if(metrics?.metric === 'Ad Spend'){
-					ad_spend = metrics?.from_value
-					ad_spend_condition = metrics.condition
+			for (campaign of inefficientCampaigns) {
+				if (campaign === campaignId+'-'+campaignName) {
+					isAlreadyPresent = true;
+					break;
 				}
-				else if(metrics?.metric === 'ROAS'){
-					roas = metrics?.from_value
-					roas_condition = metrics.condition
-				}
-			})
-			if (ad_spend > 10000 && roas < 1) {
-				// console.log("Campaign trigger");
-				inefficientCampaigns.push(data.campaign_id);
+			}
+
+			if (!isAlreadyPresent) {
+				inefficientCampaigns.push(campaignId+'-'+campaignName);
 			}
 		}
 
-		// console.log(inefficientCampaigns);
+		for (data of campaignData) {
+			const { ad_spend, direct_revenue, indirect_revenue } = data;
+			const roas = (direct_revenue + indirect_revenue) / ad_spend;
 
+			const { clicks, views } = data;
+			const ctr = (clicks / views) * 100;
+
+
+			const cpc = ad_spend / clicks;
+			const acos = (ad_spend / (direct_revenue + indirect_revenue)) * 100;
+
+			const { direct_converted_units, indirect_converted_units } = data;
+			const cr = ((direct_converted_units + indirect_converted_units) / clicks) * 100;
+
+
+			conditions.forEach(metrics => {
+				if (metrics?.metric === 'Ad Spend') {
+					if (ad_spend) {
+						if (metrics.condition === 'Is greater than') {
+							if (ad_spend > metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (ad_spend < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (ad_spend > metrics.from_value && ad_spend < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(ad_spend > metrics.from_value && ad_spend < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+
+				}
+				if (metrics?.metric === 'ROAS') {
+					if (roas) {
+						if (metrics.condition === 'Is greater than') {
+							if (roas > metrics.from_value) {
+
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (roas < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (roas > metrics.from_value && roas < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(roas > metrics.from_value && roas < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+
+
+				}
+
+				if (metrics?.metric === 'CTR') {
+					if (ctr) {
+						if (metrics.condition === 'Is greater than') {
+							if (ctr > metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (ctr < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (ctr > metrics.from_value && ctr < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(ctr > metrics.from_value && ctr < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+
+
+				}
+
+				if (metrics?.metric === 'CPC') {
+					if (cpc) {
+						if (metrics.condition === 'Is greater than') {
+							if (cpc > metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (cpc < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (cpc > metrics.from_value && cpc < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(cpc > metrics.from_value && cpc < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+
+
+				}
+
+				if (metrics?.metric === 'ACOS') {
+					if (acos) {
+						if (metrics.condition === 'Is greater than') {
+							if (acos > metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (acos < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (acos > metrics.from_value && acos < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(acos > metrics.from_value && acos < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+				}
+
+				if (metrics?.metric === 'CR') {
+					if (cr) {
+						if (metrics.condition === 'Is greater than') {
+							if (cr > metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is smaller than') {
+							if (cr < metrics.from_value) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is between') {
+							if (cr > metrics.from_value && cr < metrics.to) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+
+						else if (metrics.condition === 'Is not between') {
+							if (!(cr > metrics.from_value && cr < metrics.to)) {
+								addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+							}
+						}
+					}
+				}
+			})
+		}
+
+		// console.log(inefficientCampaigns);
+		let newChannelname = await createChannel(ruleName);
+		// let newChannelname = "contact-channel"
+		//console.log('filter camp length', inefficientCampaigns.length);
 		if (inefficientCampaigns.length > 0) {
 			const campaigns = inefficientCampaigns.join("\n");
 
-			sendMessage(
-				"campaign-inefficient",
-				`Your following Campaigns are not efficient:\n\n ${campaigns}`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`Your following Campaigns are not efficient:\n\n ${campaigns}`
+				);
+			}
+
 		} else {
-			sendMessage(
-				"campaign-inefficient",
-				`All your campaigns are running as expected!`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`All your campaigns are running as expected!`
+				);
+			}
+
 		}
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-async function sendHighCpcNotification(conditions, time_range) {
+async function sendHighCpcNotification(ruleName, conditions, time_range) {
 	try {
 		const campaignData = await getDataNew(
 			"flipkart-390013",
@@ -199,7 +443,7 @@ async function sendHighCpcNotification(conditions, time_range) {
 			let cpc = 0;
 
 			conditions.forEach(metrics => {
-				if(metrics?.metric === 'CPC'){
+				if (metrics?.metric === 'CPC') {
 					cpc = metrics?.from_value
 				}
 			})
@@ -209,23 +453,31 @@ async function sendHighCpcNotification(conditions, time_range) {
 			}
 		}
 
+		let newChannelname = await createChannel(ruleName);
+
 		if (highCpcCampaigns.length > 0) {
 			const campaigns = highCpcCampaigns.join("\n");
 
-			sendMessage(
-				"flipkart-high-cpc",
-				`Your Cost per Click is getting expensive in the following ad groups:\n\n
-					${campaigns}`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`Your Cost per Click is getting expensive in the following ad groups:\n\n
+						${campaigns}`
+				);
+			}
+
 		} else {
-			sendMessage("flipkart-high-cpc", "Your campaigns are running as expected!");
+			if (newChannelname !== undefined) {
+				sendMessage(newChannelname, "Your campaigns are running as expected!");
+			}
+
 		}
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-async function sendLowConversionRateNotification(conditions, time_range) {
+async function sendLowConversionRateNotification(ruleName, conditions, time_range) {
 	try {
 		const campaignData = await getDataKeywordReport(
 			"flipkart-390013",
@@ -246,7 +498,7 @@ async function sendLowConversionRateNotification(conditions, time_range) {
 
 			let cr = 0;
 			conditions.forEach(metrics => {
-				if(metrics?.metric === 'CR'){
+				if (metrics?.metric === 'CR') {
 					cr = metrics?.from_value
 				}
 			})
@@ -257,22 +509,29 @@ async function sendLowConversionRateNotification(conditions, time_range) {
 			}
 		}
 
+		let newChannelname = await createChannel(ruleName);
 		if (lowConversionRateCampaigns.length > 0) {
 			const campaigns = lowConversionRateCampaigns.join("\n");
 
-			sendMessage(
-				"#flipkart-low-conversion-rate",
-				`Your Conv Rate has dropped in the following targeting type:\n\n ${campaigns}`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`Your Conv Rate has dropped in the following targeting type:\n\n ${campaigns}`
+				);
+			}
+
 		} else {
-			sendMessage("#flipkart-low-conversion-rate", "Your campaigns have good CR");
+			if (newChannelname !== undefined) {
+				sendMessage(newChannelname, "Your campaigns have good CR");
+			}
+
 		}
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-async function sendLowCtrNotification(conditions, time_range) {
+async function sendLowCtrNotification(ruleName, conditions, time_range) {
 	try {
 		const campaignData = await getDataKeywordReport(
 			"flipkart-390013",
@@ -287,7 +546,7 @@ async function sendLowCtrNotification(conditions, time_range) {
 		for (data of campaignData) {
 			let ctr = 0;
 			conditions.forEach(metrics => {
-				if(metrics?.metric === 'CTR'){
+				if (metrics?.metric === 'CTR') {
 					ctr = metrics?.from_value
 				}
 			})
@@ -299,23 +558,32 @@ async function sendLowCtrNotification(conditions, time_range) {
 		}
 
 		// console.log(lowCtrCampaigns);
-
+		let newChannelname = await createChannel(ruleName);
+		console.log(newChannelname);
 		if (lowCtrCampaigns.length > 0) {
 			const campaigns = lowCtrCampaigns.join(",\n");
 
-			sendMessage(
-				"#flipkart-low-ctr",
-				`Your CTR is dropping for the following search terms:\n\n ${campaigns}`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`Your CTR is dropping for the following search terms:\n\n ${campaigns}`
+				);
+			}
+
+
 		} else {
-			sendMessage("#flipkart-low-ctr", "Your campaigns have good CTR");
+
+			if (newChannelname !== undefined) {
+				sendMessage(newChannelname, "Your campaigns have good CTR");
+			}
+
 		}
 	} catch (error) {
 		console.log(error);
 	}
 }
 
-async function sendLowAcosNotification(conditions, time_range) {
+async function sendLowAcosNotification(ruleName, conditions, time_range) {
 	try {
 		const campaignData = await getDataKeywordReport(
 			"flipkart-390013",
@@ -331,7 +599,7 @@ async function sendLowAcosNotification(conditions, time_range) {
 
 			let acos = 0;
 			conditions.forEach(metrics => {
-				if(metrics?.metric === 'ACOS'){
+				if (metrics?.metric === 'ACOS') {
 					acos = metrics?.from_value
 				}
 			})
@@ -343,16 +611,23 @@ async function sendLowAcosNotification(conditions, time_range) {
 		}
 
 		// console.log(lowAcosCampaigns);
-
+		let newChannelname = await createChannel(ruleName);
 		if (lowAcosCampaigns.length > 0) {
 			const campaigns = lowAcosCampaigns.join("\n");
 
-			sendMessage(
-				"#flipkart-low-acos",
-				`Insufficient Spends for the following search terms:\n\n ${campaigns}`
-			);
+			if (newChannelname !== undefined) {
+				sendMessage(
+					newChannelname,
+					`Insufficient Spends for the following search terms:\n\n ${campaigns}`
+				);
+			}
+
 		} else {
-			sendMessage("#flipkart-low-acos", "Your campaigns have good ACoS");
+
+			if (newChannelname !== undefined) {
+				sendMessage(newChannelname, "Your campaigns have good ACoS");
+			}
+
 		}
 	} catch (error) {
 		console.log(error);
