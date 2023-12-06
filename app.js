@@ -71,16 +71,27 @@ let documents
 
 async function getDataNew(projectId, datasetId, tableId, startDate) {
 	try {
-		const query = `
+		let query = ''
+		if (tableId === "PLA_Consolidated_Daily_Report") {
+			query = `
 		SELECT campaign_id, campaign_name, SUM(ad_spend) AS total_ad_spend, SUM(clicks) AS total_clicks, SUM(views) AS total_views,
-		SUM(direct_revenue) AS total_direct_revenue, SUM(indirect_revenue) AS total_indirect_revenue
+		SUM(direct_revenue) AS total_direct_revenue, SUM(indirect_revenue) AS total_indirect_revenue,SUM(units_sold_direct) AS total_direct_units, SUM(units_sold_indirect) AS total_indirect_units
 		FROM \`${projectId}.${datasetId}.${tableId}\`
 		WHERE date > '${startDate}'
 		GROUP BY campaign_id, campaign_name
 		LIMIT 1000
 		`;
+		} else {
+			query = `
+		SELECT campaign_id, campaign_name, SUM(banner_group_spend) AS total_ad_spend, SUM(clicks) AS total_clicks, SUM(views) AS total_views,
+		SUM(direct_revenue) AS total_direct_revenue, SUM(indirect_revenue) AS total_indirect_revenue, SUM(direct_units) AS total_direct_units, SUM(indirect_units) AS total_indirect_units
+		FROM \`${projectId}.${datasetId}.${tableId}\`
+		WHERE date > '${startDate}'
+		GROUP BY campaign_id, campaign_name
+		LIMIT 1000
+		`;
+		}
 
-		;
 		const options = {
 			query: query,
 		};
@@ -249,7 +260,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 		}
 
 		for (data of campaignData) {
-			if( (data.campaign_id === '2AWL98PEV6UK') && (ruleName === 'pla-adspend-roas-pause')){
+			if ((data.campaign_id === '2AWL98PEV6UK') && (ruleName === 'pla-adspend-roas-pause')) {
 				console.log('XHHN8MDH5L6N');
 			}
 			const dataGroup = {
@@ -272,8 +283,8 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 			const cpc = total_ad_spend / total_clicks;
 			const acos = (total_ad_spend / (total_direct_revenue + total_indirect_revenue)) * 100;
 
-			const { total_direct_converted_units, total_indirect_converted_units } = data;
-			const cr = ((total_direct_converted_units + total_indirect_converted_units) / total_clicks) * 100;
+			const { total_direct_units, total_indirect_units } = data;
+			const cr = ((total_direct_units + total_indirect_units) / total_clicks) * 100;
 
 			//console.log('logic object', logics);
 			//logics.push('OR', 'AND')
@@ -1498,7 +1509,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (total_ad_spend < value2)) {
@@ -1511,7 +1522,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -1535,7 +1546,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1547,9 +1558,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (ctr < value2)) {
@@ -1561,7 +1572,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (ctr > value2 && ctr < to2)) {
@@ -1572,7 +1583,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -1586,7 +1597,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1599,7 +1610,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cpc < value2)) {
@@ -1611,7 +1622,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cpc > value2 && cpc < to2)) {
@@ -1635,7 +1646,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1648,7 +1659,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (acos < value2)) {
@@ -1660,7 +1671,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (acos > value2 && acos < to2)) {
@@ -1671,7 +1682,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -1683,10 +1694,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1699,7 +1710,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cr < value2)) {
@@ -1711,7 +1722,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cr > value2 && cr < to2)) {
@@ -1749,7 +1760,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (total_ad_spend < value2)) {
@@ -1760,9 +1771,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -1774,7 +1785,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -1785,10 +1796,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1801,7 +1812,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (ctr < value2)) {
@@ -1813,7 +1824,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (ctr > value2 && ctr < to2)) {
@@ -1825,7 +1836,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(ctr > value2 && ctr < to2)) {
@@ -1838,7 +1849,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1851,7 +1862,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cpc < value2)) {
@@ -1863,7 +1874,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cpc > value2 && cpc < to2)) {
@@ -1875,7 +1886,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(cpc > value2 && cpc < to2)) {
@@ -1888,7 +1899,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1901,7 +1912,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (acos < value2)) {
@@ -1913,7 +1924,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (acos > value2 && acos < to2)) {
@@ -1925,7 +1936,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(acos > value2 && acos < to2)) {
@@ -1938,7 +1949,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -1951,7 +1962,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cr < value2)) {
@@ -1963,7 +1974,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cr > value2 && cr < to2)) {
@@ -1975,7 +1986,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(cr > value2 && cr < to2)) {
@@ -1989,7 +2000,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -2003,7 +2014,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (total_ad_spend < value2)) {
@@ -2015,7 +2026,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2027,7 +2038,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2040,7 +2051,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2053,7 +2064,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (ctr < value2)) {
@@ -2065,7 +2076,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (ctr > value2 && ctr < to2)) {
@@ -2077,7 +2088,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(ctr > value2 && ctr < to2)) {
@@ -2090,7 +2101,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2103,7 +2114,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cpc < value2)) {
@@ -2115,7 +2126,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cpc > value2 && cpc < to2)) {
@@ -2127,7 +2138,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(cpc > value2 && cpc < to2)) {
@@ -2140,7 +2151,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2153,7 +2164,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (acos < value2)) {
@@ -2165,7 +2176,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (acos > value2 && acos < to2)) {
@@ -2177,7 +2188,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(acos > value2 && acos < to2)) {
@@ -2190,7 +2201,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2203,7 +2214,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cr < value2)) {
@@ -2215,7 +2226,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cr > value2 && cr < to2)) {
@@ -2227,7 +2238,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(cr > value2 && cr < to2)) {
@@ -2241,7 +2252,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -2255,7 +2266,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (total_ad_spend < value2)) {
@@ -2267,7 +2278,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2279,7 +2290,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2290,10 +2301,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2306,7 +2317,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (ctr < value2)) {
@@ -2318,7 +2329,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (ctr > value2 && ctr < to2)) {
@@ -2330,7 +2341,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(ctr > value2 && ctr < to2)) {
@@ -2343,7 +2354,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2356,7 +2367,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cpc < value2)) {
@@ -2368,7 +2379,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cpc > value2 && cpc < to2)) {
@@ -2380,7 +2391,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(cpc > value2 && cpc < to2)) {
@@ -2393,7 +2404,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2406,7 +2417,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (acos < value2)) {
@@ -2418,7 +2429,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (acos > value2 && acos < to2)) {
@@ -2430,7 +2441,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(acos > value2 && acos < to2)) {
@@ -2443,7 +2454,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2456,7 +2467,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cr < value2)) {
@@ -2468,7 +2479,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cr > value2 && cr < to2)) {
@@ -2480,7 +2491,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(cr > value2 && cr < to2)) {
@@ -2510,7 +2521,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (total_ad_spend < value2)) {
@@ -2523,7 +2534,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2547,7 +2558,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2559,9 +2570,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (roas < value2)) {
@@ -2573,7 +2584,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (roas > value2 && roas < to2)) {
@@ -2584,7 +2595,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -2598,7 +2609,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2611,7 +2622,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cpc < value2)) {
@@ -2623,7 +2634,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cpc > value2 && cpc < to2)) {
@@ -2647,7 +2658,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2660,7 +2671,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (acos < value2)) {
@@ -2672,7 +2683,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (acos > value2 && acos < to2)) {
@@ -2683,7 +2694,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -2695,10 +2706,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2711,7 +2722,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cr < value2)) {
@@ -2723,7 +2734,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cr > value2 && cr < to2)) {
@@ -2761,7 +2772,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (total_ad_spend < value2)) {
@@ -2772,9 +2783,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2786,7 +2797,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -2797,10 +2808,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2813,7 +2824,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (roas < value2)) {
@@ -2825,7 +2836,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (roas > value2 && roas < to2)) {
@@ -2837,7 +2848,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(roas > value2 && roas < to2)) {
@@ -2850,7 +2861,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2863,7 +2874,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cpc < value2)) {
@@ -2875,7 +2886,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cpc > value2 && cpc < to2)) {
@@ -2887,7 +2898,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(cpc > value2 && cpc < to2)) {
@@ -2900,7 +2911,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2913,7 +2924,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (acos < value2)) {
@@ -2925,7 +2936,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (acos > value2 && acos < to2)) {
@@ -2937,7 +2948,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(acos > value2 && acos < to2)) {
@@ -2950,7 +2961,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -2963,7 +2974,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cr < value2)) {
@@ -2975,7 +2986,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cr > value2 && cr < to2)) {
@@ -2987,7 +2998,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(cr > value2 && cr < to2)) {
@@ -3001,7 +3012,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -3015,7 +3026,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
@@ -3027,7 +3038,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3039,7 +3050,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3052,7 +3063,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3065,7 +3076,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (roas < value2)) {
@@ -3077,7 +3088,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
@@ -3089,7 +3100,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
@@ -3102,7 +3113,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3115,7 +3126,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cpc < value2)) {
@@ -3127,7 +3138,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
@@ -3139,7 +3150,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
@@ -3152,7 +3163,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3165,7 +3176,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (acos < value2)) {
@@ -3177,7 +3188,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
@@ -3189,7 +3200,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
@@ -3202,7 +3213,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3215,7 +3226,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cr < value2)) {
@@ -3227,7 +3238,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
@@ -3239,7 +3250,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
@@ -3253,7 +3264,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -3267,7 +3278,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
@@ -3279,7 +3290,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3291,7 +3302,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3302,10 +3313,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3318,7 +3329,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (roas < value2)) {
@@ -3330,7 +3341,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
@@ -3342,7 +3353,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
@@ -3355,7 +3366,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3368,7 +3379,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cpc < value2)) {
@@ -3380,7 +3391,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
@@ -3392,7 +3403,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
@@ -3405,7 +3416,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3418,7 +3429,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (acos < value2)) {
@@ -3430,7 +3441,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
@@ -3442,7 +3453,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
@@ -3455,7 +3466,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3468,7 +3479,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cr < value2)) {
@@ -3480,7 +3491,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
@@ -3492,7 +3503,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
@@ -3522,7 +3533,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (total_ad_spend < value2)) {
@@ -3535,7 +3546,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3559,7 +3570,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3571,9 +3582,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (roas < value2)) {
@@ -3585,7 +3596,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (roas > value2 && roas < to2)) {
@@ -3596,7 +3607,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -3610,7 +3621,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3623,7 +3634,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (ctr < value2)) {
@@ -3635,7 +3646,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (ctr > value2 && ctr < to2)) {
@@ -3659,7 +3670,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3672,7 +3683,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (acos < value2)) {
@@ -3684,7 +3695,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (acos > value2 && acos < to2)) {
@@ -3695,7 +3706,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -3707,10 +3718,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3723,7 +3734,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (cr < value2)) {
@@ -3735,7 +3746,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (cr > value2 && cr < to2)) {
@@ -3773,7 +3784,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (total_ad_spend < value2)) {
@@ -3784,9 +3795,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3798,7 +3809,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -3809,10 +3820,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3825,7 +3836,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (roas < value2)) {
@@ -3837,7 +3848,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (roas > value2 && roas < to2)) {
@@ -3849,7 +3860,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(roas > value2 && roas < to2)) {
@@ -3862,7 +3873,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3875,7 +3886,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (ctr < value2)) {
@@ -3887,7 +3898,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (ctr > value2 && ctr < to2)) {
@@ -3899,7 +3910,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(ctr > value2 && ctr < to2)) {
@@ -3912,7 +3923,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3925,7 +3936,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (acos < value2)) {
@@ -3937,7 +3948,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (acos > value2 && acos < to2)) {
@@ -3949,7 +3960,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(acos > value2 && acos < to2)) {
@@ -3962,7 +3973,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -3975,7 +3986,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (cr < value2)) {
@@ -3987,7 +3998,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (cr > value2 && cr < to2)) {
@@ -3999,7 +4010,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(cr > value2 && cr < to2)) {
@@ -4013,7 +4024,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -4027,7 +4038,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
@@ -4039,7 +4050,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4051,7 +4062,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4064,7 +4075,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4077,7 +4088,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (roas < value2)) {
@@ -4089,7 +4100,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
@@ -4101,7 +4112,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
@@ -4114,7 +4125,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4127,7 +4138,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (ctr < value2)) {
@@ -4139,7 +4150,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
@@ -4151,7 +4162,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
@@ -4164,7 +4175,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4177,7 +4188,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (acos < value2)) {
@@ -4189,7 +4200,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
@@ -4201,7 +4212,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
@@ -4214,7 +4225,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4227,7 +4238,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (cr < value2)) {
@@ -4239,7 +4250,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
@@ -4251,7 +4262,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
@@ -4265,7 +4276,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -4279,7 +4290,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
@@ -4291,7 +4302,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4303,7 +4314,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4314,10 +4325,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4330,7 +4341,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (roas < value2)) {
@@ -4342,7 +4353,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
@@ -4354,7 +4365,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
@@ -4367,7 +4378,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4380,7 +4391,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (ctr < value2)) {
@@ -4392,7 +4403,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
@@ -4404,7 +4415,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
@@ -4417,7 +4428,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4430,7 +4441,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (acos < value2)) {
@@ -4442,7 +4453,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
@@ -4454,7 +4465,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
@@ -4467,7 +4478,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4480,7 +4491,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (cr < value2)) {
@@ -4492,7 +4503,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
@@ -4504,7 +4515,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
@@ -4534,7 +4545,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (total_ad_spend < value2)) {
@@ -4547,7 +4558,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4571,7 +4582,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4583,9 +4594,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (roas < value2)) {
@@ -4597,7 +4608,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (roas > value2 && roas < to2)) {
@@ -4608,7 +4619,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -4622,7 +4633,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4635,7 +4646,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (ctr < value2)) {
@@ -4647,7 +4658,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (ctr > value2 && ctr < to2)) {
@@ -4671,7 +4682,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4684,7 +4695,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cpc < value2)) {
@@ -4696,7 +4707,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cpc > value2 && cpc < to2)) {
@@ -4707,7 +4718,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -4719,10 +4730,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4735,7 +4746,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cr < value2)) {
@@ -4747,7 +4758,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cr > value2 && cr < to2)) {
@@ -4785,7 +4796,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (total_ad_spend < value2)) {
@@ -4796,9 +4807,9 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4810,7 +4821,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -4821,10 +4832,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4837,7 +4848,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (roas < value2)) {
@@ -4849,7 +4860,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (roas > value2 && roas < to2)) {
@@ -4861,7 +4872,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(roas > value2 && roas < to2)) {
@@ -4874,7 +4885,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4887,7 +4898,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (ctr < value2)) {
@@ -4899,7 +4910,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (ctr > value2 && ctr < to2)) {
@@ -4911,7 +4922,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(ctr > value2 && ctr < to2)) {
@@ -4924,7 +4935,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4937,7 +4948,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cpc < value2)) {
@@ -4949,7 +4960,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cpc > value2 && cpc < to2)) {
@@ -4961,7 +4972,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(cpc > value2 && cpc < to2)) {
@@ -4974,7 +4985,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -4987,7 +4998,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cr < value2)) {
@@ -4999,7 +5010,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cr > value2 && cr < to2)) {
@@ -5011,7 +5022,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(cr > value2 && cr < to2)) {
@@ -5025,7 +5036,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -5039,7 +5050,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (total_ad_spend < value2)) {
@@ -5051,7 +5062,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -5063,7 +5074,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -5076,7 +5087,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5089,7 +5100,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (roas < value2)) {
@@ -5101,7 +5112,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
@@ -5113,7 +5124,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
@@ -5126,7 +5137,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5139,7 +5150,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (ctr < value2)) {
@@ -5151,7 +5162,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
@@ -5163,7 +5174,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
@@ -5176,7 +5187,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5189,7 +5200,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cpc < value2)) {
@@ -5201,7 +5212,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
@@ -5213,7 +5224,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
@@ -5226,7 +5237,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5239,7 +5250,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cr < value2)) {
@@ -5251,7 +5262,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
@@ -5263,7 +5274,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
@@ -5277,7 +5288,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -5291,7 +5302,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (total_ad_spend < value2)) {
@@ -5303,7 +5314,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -5315,7 +5326,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -5326,10 +5337,10 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5342,7 +5353,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (roas < value2)) {
@@ -5354,7 +5365,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
@@ -5366,7 +5377,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
@@ -5379,7 +5390,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5392,7 +5403,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (ctr < value2)) {
@@ -5404,7 +5415,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
@@ -5416,7 +5427,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
@@ -5429,7 +5440,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5442,7 +5453,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cpc < value2)) {
@@ -5454,7 +5465,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
@@ -5466,7 +5477,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
@@ -5479,7 +5490,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -5492,7 +5503,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cr < value2)) {
@@ -5504,7 +5515,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
@@ -5516,7 +5527,7 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
@@ -5524,6 +5535,1018 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 											}
 										} else {
 											if (!(acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'CR') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 || cr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(acos > value2 && acos < to2)) {
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
@@ -5646,9 +6669,8 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 			const cpc = total_ad_spend / total_clicks;
 			const acos = (total_ad_spend / (total_direct_revenue + total_indirect_revenue)) * 100;
 
-			const { total_direct_converted_units, total_indirect_converted_units } = data;
-			const cr = ((total_direct_converted_units + total_indirect_converted_units) / total_clicks) * 100;
-
+			const { total_direct_units, total_indirect_units } = data;
+			const cr = ((total_direct_units + total_indirect_units) / total_clicks) * 100;
 			//console.log('logic object', logics);
 			//logics.push('OR', 'AND')
 
@@ -6872,7 +7894,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (total_ad_spend < value2)) {
@@ -6885,7 +7907,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -6909,7 +7931,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -6921,9 +7943,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (ctr < value2)) {
@@ -6935,7 +7957,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (ctr > value2 && ctr < to2)) {
@@ -6946,7 +7968,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -6960,7 +7982,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -6973,7 +7995,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cpc < value2)) {
@@ -6985,7 +8007,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cpc > value2 && cpc < to2)) {
@@ -7009,7 +8031,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7022,7 +8044,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (acos < value2)) {
@@ -7034,7 +8056,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (acos > value2 && acos < to2)) {
@@ -7045,7 +8067,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -7057,10 +8079,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7073,7 +8095,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cr < value2)) {
@@ -7085,7 +8107,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1) || (cr > value2 && cr < to2)) {
@@ -7110,7 +8132,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is smaller than') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -7124,7 +8146,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (total_ad_spend < value2)) {
@@ -7135,9 +8157,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7149,7 +8171,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7160,10 +8182,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7176,7 +8198,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (ctr < value2)) {
@@ -7188,7 +8210,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (ctr > value2 && ctr < to2)) {
@@ -7200,7 +8222,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(ctr > value2 && ctr < to2)) {
@@ -7213,7 +8235,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7226,7 +8248,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cpc < value2)) {
@@ -7238,7 +8260,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cpc > value2 && cpc < to2)) {
@@ -7250,7 +8272,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(cpc > value2 && cpc < to2)) {
@@ -7263,7 +8285,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7276,7 +8298,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (acos < value2)) {
@@ -7288,7 +8310,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (acos > value2 && acos < to2)) {
@@ -7300,7 +8322,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(acos > value2 && acos < to2)) {
@@ -7313,7 +8335,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7326,7 +8348,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cr < value2)) {
@@ -7338,7 +8360,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || (cr > value2 && cr < to2)) {
@@ -7350,7 +8372,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas < value1) || !(cr > value2 && cr < to2)) {
@@ -7364,7 +8386,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -7378,7 +8400,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (total_ad_spend < value2)) {
@@ -7390,7 +8412,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7402,7 +8424,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7415,7 +8437,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7428,7 +8450,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (ctr < value2)) {
@@ -7440,7 +8462,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (ctr > value2 && ctr < to2)) {
@@ -7452,7 +8474,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(ctr > value2 && ctr < to2)) {
@@ -7465,7 +8487,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7478,7 +8500,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cpc < value2)) {
@@ -7490,7 +8512,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cpc > value2 && cpc < to2)) {
@@ -7502,7 +8524,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(cpc > value2 && cpc < to2)) {
@@ -7515,7 +8537,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7528,7 +8550,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (acos < value2)) {
@@ -7540,7 +8562,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (acos > value2 && acos < to2)) {
@@ -7552,7 +8574,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(acos > value2 && acos < to2)) {
@@ -7565,7 +8587,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7578,7 +8600,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cr < value2)) {
@@ -7590,7 +8612,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || (cr > value2 && cr < to2)) {
@@ -7602,7 +8624,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((roas > value1 && roas < to1) || !(cr > value2 && cr < to2)) {
@@ -7616,7 +8638,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -7630,7 +8652,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (total_ad_spend < value2)) {
@@ -7642,7 +8664,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7654,7 +8676,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7665,10 +8687,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7681,7 +8703,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (ctr < value2)) {
@@ -7693,7 +8715,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (ctr > value2 && ctr < to2)) {
@@ -7705,7 +8727,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(ctr > value2 && ctr < to2)) {
@@ -7718,7 +8740,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7731,7 +8753,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cpc < value2)) {
@@ -7743,7 +8765,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cpc > value2 && cpc < to2)) {
@@ -7755,7 +8777,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(cpc > value2 && cpc < to2)) {
@@ -7768,7 +8790,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7781,7 +8803,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (acos < value2)) {
@@ -7793,7 +8815,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (acos > value2 && acos < to2)) {
@@ -7805,7 +8827,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(acos > value2 && acos < to2)) {
@@ -7818,7 +8840,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7831,7 +8853,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cr < value2)) {
@@ -7843,7 +8865,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || (cr > value2 && cr < to2)) {
@@ -7855,7 +8877,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(roas > value1 && roas < to1) || !(cr > value2 && cr < to2)) {
@@ -7885,7 +8907,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (total_ad_spend < value2)) {
@@ -7898,7 +8920,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -7922,7 +8944,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7934,9 +8956,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (roas < value2)) {
@@ -7948,7 +8970,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (roas > value2 && roas < to2)) {
@@ -7959,7 +8981,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -7973,7 +8995,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -7986,7 +9008,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cpc < value2)) {
@@ -7998,7 +9020,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cpc > value2 && cpc < to2)) {
@@ -8022,7 +9044,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8035,7 +9057,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (acos < value2)) {
@@ -8047,7 +9069,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (acos > value2 && acos < to2)) {
@@ -8058,7 +9080,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -8070,10 +9092,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8086,7 +9108,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cr < value2)) {
@@ -8098,7 +9120,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1) || (cr > value2 && cr < to2)) {
@@ -8136,7 +9158,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (total_ad_spend < value2)) {
@@ -8147,9 +9169,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8161,7 +9183,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8172,10 +9194,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8188,7 +9210,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (roas < value2)) {
@@ -8200,7 +9222,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (roas > value2 && roas < to2)) {
@@ -8212,7 +9234,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(roas > value2 && roas < to2)) {
@@ -8225,7 +9247,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8238,7 +9260,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cpc < value2)) {
@@ -8250,7 +9272,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cpc > value2 && cpc < to2)) {
@@ -8262,7 +9284,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(cpc > value2 && cpc < to2)) {
@@ -8275,7 +9297,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8288,7 +9310,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (acos < value2)) {
@@ -8300,7 +9322,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (acos > value2 && acos < to2)) {
@@ -8312,7 +9334,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(acos > value2 && acos < to2)) {
@@ -8325,7 +9347,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8338,7 +9360,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cr < value2)) {
@@ -8350,7 +9372,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || (cr > value2 && cr < to2)) {
@@ -8362,7 +9384,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr < value1) || !(cr > value2 && cr < to2)) {
@@ -8376,7 +9398,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -8390,7 +9412,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
@@ -8402,7 +9424,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8414,7 +9436,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8427,7 +9449,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8440,7 +9462,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (roas < value2)) {
@@ -8452,7 +9474,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
@@ -8464,7 +9486,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
@@ -8477,7 +9499,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8490,7 +9512,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cpc < value2)) {
@@ -8502,7 +9524,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
@@ -8514,7 +9536,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
@@ -8527,7 +9549,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8540,7 +9562,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (acos < value2)) {
@@ -8552,7 +9574,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
@@ -8564,7 +9586,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
@@ -8577,7 +9599,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8590,7 +9612,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cr < value2)) {
@@ -8602,7 +9624,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
@@ -8614,7 +9636,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
@@ -8628,7 +9650,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -8642,7 +9664,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
@@ -8654,7 +9676,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8666,7 +9688,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8677,10 +9699,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8693,7 +9715,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (roas < value2)) {
@@ -8705,7 +9727,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
@@ -8717,7 +9739,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
@@ -8730,7 +9752,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8743,7 +9765,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cpc < value2)) {
@@ -8755,7 +9777,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
@@ -8767,7 +9789,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
@@ -8780,7 +9802,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8793,7 +9815,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (acos < value2)) {
@@ -8805,7 +9827,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
@@ -8817,7 +9839,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
@@ -8830,7 +9852,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8843,7 +9865,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cr < value2)) {
@@ -8855,7 +9877,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
@@ -8867,7 +9889,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
@@ -8897,7 +9919,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (total_ad_spend < value2)) {
@@ -8910,7 +9932,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -8934,7 +9956,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8946,9 +9968,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (roas < value2)) {
@@ -8960,7 +9982,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (roas > value2 && roas < to2)) {
@@ -8971,7 +9993,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -8985,7 +10007,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -8998,7 +10020,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (ctr < value2)) {
@@ -9010,7 +10032,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (ctr > value2 && ctr < to2)) {
@@ -9034,7 +10056,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9047,7 +10069,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (acos < value2)) {
@@ -9059,7 +10081,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (acos > value2 && acos < to2)) {
@@ -9070,7 +10092,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -9082,10 +10104,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9098,7 +10120,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (cr < value2)) {
@@ -9110,7 +10132,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1) || (cr > value2 && cr < to2)) {
@@ -9148,7 +10170,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (total_ad_spend < value2)) {
@@ -9159,9 +10181,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9173,7 +10195,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9184,10 +10206,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9200,7 +10222,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (roas < value2)) {
@@ -9212,7 +10234,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (roas > value2 && roas < to2)) {
@@ -9224,7 +10246,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(roas > value2 && roas < to2)) {
@@ -9237,7 +10259,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9250,7 +10272,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (ctr < value2)) {
@@ -9262,7 +10284,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (ctr > value2 && ctr < to2)) {
@@ -9274,7 +10296,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(ctr > value2 && ctr < to2)) {
@@ -9287,7 +10309,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9300,7 +10322,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (acos < value2)) {
@@ -9312,7 +10334,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (acos > value2 && acos < to2)) {
@@ -9324,7 +10346,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(acos > value2 && acos < to2)) {
@@ -9337,7 +10359,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9350,7 +10372,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (cr < value2)) {
@@ -9362,7 +10384,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || (cr > value2 && cr < to2)) {
@@ -9374,7 +10396,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc < value1) || !(cr > value2 && cr < to2)) {
@@ -9388,7 +10410,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -9402,7 +10424,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
@@ -9414,7 +10436,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9426,7 +10448,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9439,7 +10461,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9452,7 +10474,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (roas < value2)) {
@@ -9464,7 +10486,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
@@ -9476,7 +10498,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
@@ -9489,7 +10511,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9502,7 +10524,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (ctr < value2)) {
@@ -9514,7 +10536,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
@@ -9526,7 +10548,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
@@ -9539,7 +10561,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9552,7 +10574,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (acos < value2)) {
@@ -9564,7 +10586,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
@@ -9576,7 +10598,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
@@ -9589,7 +10611,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9602,7 +10624,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (cr < value2)) {
@@ -9614,7 +10636,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
@@ -9626,7 +10648,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
@@ -9640,7 +10662,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -9654,7 +10676,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
@@ -9666,7 +10688,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9678,7 +10700,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9689,10 +10711,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9705,7 +10727,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (roas < value2)) {
@@ -9717,7 +10739,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
@@ -9729,7 +10751,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
@@ -9742,7 +10764,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9755,7 +10777,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (ctr < value2)) {
@@ -9767,7 +10789,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
@@ -9779,7 +10801,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
@@ -9792,7 +10814,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ACOS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9805,7 +10827,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (acos < value2)) {
@@ -9817,7 +10839,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
@@ -9829,7 +10851,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
@@ -9842,7 +10864,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9855,7 +10877,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (cr < value2)) {
@@ -9867,7 +10889,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
@@ -9879,7 +10901,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
@@ -9909,7 +10931,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (total_ad_spend < value2)) {
@@ -9922,7 +10944,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -9946,7 +10968,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -9958,9 +10980,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (roas < value2)) {
@@ -9972,7 +10994,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (roas > value2 && roas < to2)) {
@@ -9983,7 +11005,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -9997,7 +11019,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10010,7 +11032,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (ctr < value2)) {
@@ -10022,7 +11044,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (ctr > value2 && ctr < to2)) {
@@ -10046,7 +11068,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10059,7 +11081,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cpc < value2)) {
@@ -10071,7 +11093,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cpc > value2 && cpc < to2)) {
@@ -10082,7 +11104,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
@@ -10094,10 +11116,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10110,7 +11132,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cr < value2)) {
@@ -10122,7 +11144,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1) || (cr > value2 && cr < to2)) {
@@ -10160,7 +11182,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (total_ad_spend < value2)) {
@@ -10171,9 +11193,9 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10185,7 +11207,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10196,10 +11218,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10212,7 +11234,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (roas < value2)) {
@@ -10224,7 +11246,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (roas > value2 && roas < to2)) {
@@ -10236,7 +11258,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(roas > value2 && roas < to2)) {
@@ -10249,7 +11271,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10262,7 +11284,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (ctr < value2)) {
@@ -10274,7 +11296,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (ctr > value2 && ctr < to2)) {
@@ -10286,7 +11308,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(ctr > value2 && ctr < to2)) {
@@ -10299,7 +11321,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10312,7 +11334,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cpc < value2)) {
@@ -10324,7 +11346,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cpc > value2 && cpc < to2)) {
@@ -10336,7 +11358,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(cpc > value2 && cpc < to2)) {
@@ -10349,7 +11371,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10362,7 +11384,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cr < value2)) {
@@ -10374,7 +11396,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || (cr > value2 && cr < to2)) {
@@ -10386,7 +11408,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos < value1) || !(cr > value2 && cr < to2)) {
@@ -10400,7 +11422,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -10414,7 +11436,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (total_ad_spend < value2)) {
@@ -10426,7 +11448,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10438,7 +11460,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10451,7 +11473,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10464,7 +11486,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (roas < value2)) {
@@ -10476,7 +11498,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
@@ -10488,7 +11510,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
@@ -10501,7 +11523,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10514,7 +11536,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (ctr < value2)) {
@@ -10526,7 +11548,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
@@ -10538,7 +11560,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
@@ -10551,7 +11573,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10564,7 +11586,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cpc < value2)) {
@@ -10576,7 +11598,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
@@ -10588,7 +11610,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
@@ -10601,7 +11623,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10614,7 +11636,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cr < value2)) {
@@ -10626,7 +11648,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
@@ -10638,7 +11660,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if ((acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
@@ -10652,7 +11674,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 									}
 								}
 							}
-						
+
 							else if (condition1 === 'Is not between') {
 								if (metric2 === 'Ad Spend') {
 									if (condition2 === 'Is greater than') {
@@ -10666,7 +11688,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (total_ad_spend < value2)) {
@@ -10678,7 +11700,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10690,7 +11712,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
@@ -10701,10 +11723,10 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
-						
+
 									}
 								}
-						
+
 								else if (metric2 === 'ROAS') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10717,7 +11739,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (roas < value2)) {
@@ -10729,7 +11751,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
@@ -10741,7 +11763,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
@@ -10754,7 +11776,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CTR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10767,7 +11789,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (ctr < value2)) {
@@ -10779,7 +11801,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
@@ -10791,7 +11813,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
@@ -10804,7 +11826,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CPC') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10817,7 +11839,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cpc < value2)) {
@@ -10829,7 +11851,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
@@ -10841,7 +11863,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
@@ -10854,7 +11876,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 										}
 									}
 								}
-						
+
 								else if (metric2 === 'CR') {
 									if (condition2 === 'Is greater than') {
 										if (logicGate === 'OR') {
@@ -10867,7 +11889,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is smaller than') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cr < value2)) {
@@ -10879,7 +11901,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
@@ -10891,7 +11913,7 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										}
 									}
-						
+
 									else if (condition2 === 'Is not between') {
 										if (logicGate === 'OR') {
 											if (!(acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
@@ -10899,6 +11921,1019 @@ async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_rang
 											}
 										} else {
 											if (!(acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+
+						else if (metric1 === 'CR') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 || cr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cr > value1 && cr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cr > value1 && cr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+
+									}
+								}
+
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cr > value1 && cr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cr > value1 && cr < to1) && !(acos > value2 && acos < to2)) {
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
