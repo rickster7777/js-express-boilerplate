@@ -3,10 +3,15 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const Rule = require('./database/user/rules.model');
 const Action = require('./database/user/actions.model.js')
+const cors = require('cors');
 
 require('./db.js');
 
 const app = express();
+
+app.use(cors({
+  origin: "*"
+}));
 
 app.use(bodyParser.json());
 
