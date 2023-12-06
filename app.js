@@ -167,7 +167,7 @@ const fetchDocs = async () => {
 			await sendCampaignInefficientNotification(adsCateg, element.action, element.ruleName, element.conditions, timerange);
 		}
 
-		else if (element.applyRuleTo === 'AdGroupp') {
+		else if (element.applyRuleTo === 'AdGroup') {
 			await sendHighCpcNotification(adsCateg, element.ruleName, element.conditions, timerange);
 		}
 
