@@ -168,7 +168,7 @@ const fetchDocs = async () => {
 		}
 
 		else if (element.applyRuleTo === 'AdGroupp') {
-			await sendHighCpcNotification(element.ruleName, element.conditions, timerange);
+			await sendHighCpcNotification(adsCateg, element.ruleName, element.conditions, timerange);
 		}
 
 		else if (element.applyRuleTo === 'Targeting') {
@@ -2495,6 +2495,3042 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 								}
 							}
 						}
+						else if (metric1 === 'CTR') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((ctr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((ctr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 || ctr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'CPC') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cpc > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cpc > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 || cpc < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'ACOS') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((acos > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((acos > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 || acos < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
 					}
 				}
 
@@ -2529,12 +5565,18 @@ async function sendCampaignInefficientNotification(adsCateg, actions, ruleName, 
 		console.log(error);
 	}
 }
-async function sendHighCpcNotification(ruleName, conditions, time_range) {
+async function sendHighCpcNotification(adsCateg, ruleName, conditions, time_range) {
 	try {
+		let adcat = "PLA_Consolidated_Daily_Report";
+
+		if (adsCateg === 'PCA') {
+			adcat = "PCA_Consolidated_Daily_Report";
+		}
+
 		const campaignData = await getDataNew(
 			"flipkart-390013",
 			"relaxo",
-			"PLA_Consolidated_Daily_Report",
+			adcat,
 			time_range
 		);
 
@@ -4821,6 +7863,3042 @@ async function sendHighCpcNotification(ruleName, conditions, time_range) {
 											}
 										} else {
 											if (!(roas > value1 && roas < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'CTR') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((ctr > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((ctr > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 || ctr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((ctr > value1 && ctr < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(ctr > value1 && ctr < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(ctr > value1 && ctr < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'CPC') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cpc > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((cpc > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 || cpc < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((cpc > value1 && cpc < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ACOS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(acos > value2 && acos < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(cpc > value1 && cpc < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(cpc > value1 && cpc < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						}
+						else if (metric1 === 'ACOS') {
+							if (condition1 === 'Is greater than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((acos > value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+										else {
+											if ((acos > value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+							else if (condition1 === 'Is smaller than') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos < value1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos < value1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 || acos < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if ((acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if ((acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+							}
+						
+							else if (condition1 === 'Is not between') {
+								if (metric2 === 'Ad Spend') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(total_ad_spend > value2 && total_ad_spend < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+						
+									}
+								}
+						
+								else if (metric2 === 'ROAS') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(roas > value2 && roas < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CTR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(ctr > value2 && ctr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CPC') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(cpc > value2 && cpc < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+								}
+						
+								else if (metric2 === 'CR') {
+									if (condition2 === 'Is greater than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr > value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is smaller than') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr < value2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && (cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										}
+									}
+						
+									else if (condition2 === 'Is not between') {
+										if (logicGate === 'OR') {
+											if (!(acos > value1 && acos < to1) || !(cr > value2 && cr < to2)) {
+												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
+											}
+										} else {
+											if (!(acos > value1 && acos < to1) && !(cr > value2 && cr < to2)) {
 												addToInefficientCampaigns(data.campaign_id, data.campaign_name);
 											}
 										}
