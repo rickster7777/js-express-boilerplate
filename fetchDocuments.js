@@ -15,7 +15,7 @@ module.exports = async function fetchDocuments() {
       console.log('Documents type:', documents.length);
 
       // Close the connection after fetching documents
-      await mongoose.connection.close();
+      // await mongoose.connection.close();
 
       // Return the fetched documents
       return documents;
