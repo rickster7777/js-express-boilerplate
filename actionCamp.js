@@ -13,6 +13,9 @@ const actionCampMapSchema = new mongoose.Schema({
     },
     isExecuted: {
         type: String
+    },
+    createdAt: {
+        type: String
     }
 
 });

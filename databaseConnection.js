@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+require("dotenv").config();
 
 const connectToMongo = async () => {
     try {
-        const db = 'mongodb+srv://rickster:eusjwRx9US1IFGe6@cluster0.7otfiqs.mongodb.net/Hector?retryWrites=true&w=majority';
+        const db = process.env.MONGO_ATLAS_URL;
         mongoose.set('strictQuery', false);
 
         const mongoOutput = await mongoose.connect(db, {
